@@ -38,12 +38,7 @@ namespace AuthApi.Services
         }
 
         public MimeMessage CreateConfEmail(string email, string token)
-        {
-            Console.WriteLine(Sender);
-            Console.WriteLine(SmptServer);
-            Console.WriteLine(Port);
-            Console.WriteLine(UserName);
-            Console.WriteLine(Password);
+        {    
             MimeMessage mail = new();
             mail.From.Add(new MailboxAddress("email", Sender));
             mail.To.Add(new MailboxAddress("email", email));

@@ -33,7 +33,7 @@ namespace AuthApi.Controllers
             return await _context.Users.ToListAsync();
         }
 
-        [HttpPost("RegisterUsers", Name = "RegisterUser")]
+        [HttpPost("RegisterUsers", Name = "RegUser")]
         public async Task<IActionResult> Postuser(RegisterDTO credentials)
         {
             if (credentials.Password == credentials.PasswordRepeat)
@@ -53,7 +53,7 @@ namespace AuthApi.Controllers
                         await _context.SaveChangesAsync();
                         return Ok("Usuario creado. Por favor, confirme su email.");
                     }
-                    else return BadRequest("Error de audio");
+                    else return BadRequest("Hubo un problema al enviar el correo de confirmación.");
                    
                 }
                 else return BadRequest("Este correo ya está en uso");
@@ -61,7 +61,7 @@ namespace AuthApi.Controllers
             else  return BadRequest("Contraseñas no coinciden"); 
         }
 
-        [HttpPost("LoginUsers", Name = "LogUser")]
+        [HttpPost("LogUser", Name = "LogUser")]
         public async Task<IActionResult> Getuser(LoginDTO credentials)
         {
             var confirmacion = await _context.Users.FirstOrDefaultAsync(u => u.Email == credentials.Email);
@@ -81,7 +81,7 @@ namespace AuthApi.Controllers
             else  return NotFound("Usuario no encontrado"); 
         }
 
-        [HttpGet("ConfirmEmail", Name = "Confirm")]
+        [HttpGet("ConfirmEmail/{token}", Name = "ConfirmUser")]
         public async Task<IActionResult> PostEmail(string token)
         {
             try
@@ -109,7 +109,7 @@ namespace AuthApi.Controllers
             catch (Exception e) { return BadRequest(e.Message); }
         }
 
-        [HttpGet("RequestChangePassword", Name = "Request")]
+        [HttpGet("RequestChangePassword/{email}", Name = "Request")]
         public async Task<IActionResult> PostPassword(string email)
         {
             try
