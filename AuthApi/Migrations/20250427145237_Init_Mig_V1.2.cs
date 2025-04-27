@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AuthApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_migration : Migration
+    public partial class Init_Mig_V12 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,8 @@ namespace AuthApi.Migrations
                     Name = table.Column<string>(type: "text", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    Confirmed = table.Column<bool>(type: "boolean", nullable: false)
+                    Confirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    UserType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

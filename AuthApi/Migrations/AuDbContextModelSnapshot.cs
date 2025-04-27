@@ -44,6 +44,9 @@ namespace AuthApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UserType")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");

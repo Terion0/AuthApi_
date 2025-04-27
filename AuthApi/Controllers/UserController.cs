@@ -1,5 +1,6 @@
 ﻿using AutenticationApi.Models;
 using AuthApi.DbsContext;
+using AuthApi.Models;
 using AuthApi.Models.DTO;
 using AuthApi.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,7 @@ namespace AuthApi.Controllers
                     nuevo.Name = credentials.Name;
                     nuevo.Email = credentials.Email;
                     nuevo.PasswordHash = _encryptService.HashPassword(credentials.Password);
+                    nuevo.UserType = credentials.UserType;
                     string token = _jwtService.GenerateJwtToken(nuevo, "RegisteredUser", TimeSpan.FromHours(1));
                     bool enviado = _emailService.CreateAndSendConfirmarionEmail(nuevo.Email, token);
                     if (enviado) 

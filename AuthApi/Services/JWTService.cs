@@ -29,7 +29,8 @@ namespace AuthApi.Services
             var claims = new List<Claim>
             {
              new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-             new Claim(ClaimTypes.Email, user.Email)
+             new Claim(ClaimTypes.Email, user.Email),
+             new Claim("UserType", ((int)user.UserType).ToString())
             };
 
             var tokenDescriptor = new SecurityTokenDescriptor
