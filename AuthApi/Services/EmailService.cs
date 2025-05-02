@@ -38,13 +38,15 @@ namespace AuthApi.Services
         }
 
         public MimeMessage CreateConfEmail(string email, string token)
-        {    
+        {
+            string confirmationLink = $"http://localhost:70/User/ConfirmEmail/{token}";
             MimeMessage mail = new();
             mail.From.Add(new MailboxAddress("email", Sender));
             mail.To.Add(new MailboxAddress("email", email));
             mail.Subject = "Confirmación de correo";
 
-            string body = $"Hola,\n\nPor favor confirma tu correo usando el siguiente token:\n\n{token}\n\nEste token expirará en 1 hora.";
+            string body = $"Hola,\n\nPor favor confirma tu correo usando el siguiente enlace:\n\n{confirmationLink}" +
+                $"\n\nEste token expirará en 1 hora.";
 
             mail.Body = new TextPart("plain")
             {
