@@ -1,12 +1,6 @@
 using AuthApi.DbsContext;
 using AuthApi.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Npgsql.EntityFrameworkCore;
-using System.Configuration;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

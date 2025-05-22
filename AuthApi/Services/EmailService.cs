@@ -7,98 +7,61 @@ using MimeKit;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using SendGrid.Helpers.Mail;
+using SendGrid;
+using System.Reflection.Metadata;
 namespace AuthApi.Services
 {
     public class EmailService
     {
         public string Sender { get; set; } = null;
-        public string SmptServer { get; set; } = null;
-        public int  Port { get; set; }
         public string UserName { get; set; } = null;
         public string Password { get; set; } = null;
-
+        public string Host { get; set; } = null;
 
 
         public EmailService(IConfiguration configuration)
         {
             var emailSettings = configuration.GetSection("EmailSettings");
             Sender = emailSettings.GetValue<string>("UserEmail");
-            SmptServer = emailSettings.GetValue<string>("SmptServer");
-            Port = emailSettings.GetValue<int>("Port");
             UserName = emailSettings.GetValue<string>("UserName");
             Password = emailSettings.GetValue<string>("UserApiKey");
+            Host = emailSettings.GetValue<string>("Host");
         }
 
         public bool CreateAndSendConfirmarionEmail(string email, string token) {
-          return  SendEmail(CreateConfEmail(email, token));
+          return  SendConEmail(email, token).Result;
         }
         public bool CreateAndSendPasswordRessetEmail(string email, string token)
         {
-          return  SendEmail(CreateResetEmail(email, token));
+          return  SendResetEmail(email, token).Result;
         }
 
-        public MimeMessage CreateConfEmail(string email, string token)
+      
+
+
+        public async Task<bool> SendConEmail(string toEmail, string token)
         {
-            string confirmationLink = $"http://localhost:70/User/ConfirmEmail/{token}";
-            MimeMessage mail = new();
-            mail.From.Add(new MailboxAddress("email", Sender));
-            mail.To.Add(new MailboxAddress("email", email));
-            mail.Subject = "Confirmación de correo";
-
-            string body = $"Hola,\n\nPor favor confirma tu correo usando el siguiente enlace:\n\n{confirmationLink}" +
-                $"\n\nEste token expirará en 1 hora.";
-
-            mail.Body = new TextPart("plain")
-            {
-                Text = body
-            };
-            return mail;
+            string confirmationLink = $"https://{Host}:5173/confirm-email/{token}";
+            var client = new SendGridClient(Password);
+            var from = new EmailAddress(Sender, UserName);
+            var to = new EmailAddress(toEmail);
+            var msg = MailHelper.CreateSingleEmail(from, to, "Confirmation email", confirmationLink, htmlContent: null);
+            var response = await client.SendEmailAsync(msg);
+            return response.IsSuccessStatusCode;
         }
 
-        public MimeMessage CreateResetEmail(string email, string token)
+
+        public async Task<bool> SendResetEmail(string toEmail, string token)
         {
-            MimeMessage mail = new();
-            mail.From.Add(new MailboxAddress("email", Sender));
-            mail.To.Add(new MailboxAddress("email", email));
-            mail.Subject = "Cambiar contraseña";
-
-            string body = $"Hola,\n\nPor favor haz click en el enlace para cambiar tu contraseña usando el siguiente token:\n\n{token}\n\nEste token expirará en 1 hora.";
-
-            mail.Body = new TextPart("plain")
-            {
-                Text = body
-            };
-
-            return mail;
+            string confirmationLink = $"https://{Host}:5173/pass-change/{token}";
+            var client = new SendGridClient(Password);
+            var from = new EmailAddress(Sender, UserName);
+            var to = new EmailAddress(toEmail);
+            var msg = MailHelper.CreateSingleEmail(from, to, "Change password", confirmationLink, htmlContent: null);
+            var response = await client.SendEmailAsync(msg);
+            return response.IsSuccessStatusCode;
         }
-
-        public bool SendEmail(MimeMessage message)
-        {
-            SmtpClient client = new();
-            try
-            {
-                client.Connect(SmptServer, Port, SecureSocketOptions.SslOnConnect);
-                client.AuthenticationMechanisms.Remove("XOAUTH2");
-                client.Authenticate(UserName, Password);
-                client.Send(message);
-                return true;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error sending email: {e.Message}");
-                return false;
-            }
-            finally
-            {
-                client.Disconnect(true);
-                client.Dispose();
-               
-            }
-
-        }
-
-
 
 
     }
