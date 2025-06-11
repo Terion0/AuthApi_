@@ -42,7 +42,7 @@ namespace AuthApi.Services
 
         public async Task<bool> SendConEmail(string toEmail, string token)
         {
-            string confirmationLink = $"https://{Host}:5173/confirm-email/{token}";
+            string confirmationLink = $"http://{Host}/confirm-email/{token}";
             var client = new SendGridClient(Password);
             var from = new EmailAddress(Sender, UserName);
             var to = new EmailAddress(toEmail);
@@ -54,7 +54,7 @@ namespace AuthApi.Services
 
         public async Task<bool> SendResetEmail(string toEmail, string token)
         {
-            string confirmationLink = $"https://{Host}:5173/pass-change/{token}";
+            string confirmationLink = $"http://{Host}/pass-change/{token}";
             var client = new SendGridClient(Password);
             var from = new EmailAddress(Sender, UserName);
             var to = new EmailAddress(toEmail);
