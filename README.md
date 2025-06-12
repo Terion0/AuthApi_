@@ -12,7 +12,7 @@ Esta API proporciona un sistema completo de autenticación con:
 
 ## ⚙️ Configuración de entorno (`appsettings.json`)
 
-```jsonc
+```json
 {
   "Logging": {
     "LogLevel": {
